@@ -12,6 +12,14 @@ require('connect.php');
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
+
+
+
+    <!-- Bootstrap Bundle JS (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
 </head>
 
 <body>
@@ -27,7 +35,7 @@ require('connect.php');
             </h4>
 
             <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addproduct">
-                <i class="bi bi-pencil"></i> Add Product
+                <i class="bi bi-plus-circle"></i> Add Product
             </button>
 
         </div>
@@ -66,7 +74,7 @@ require('connect.php');
                           <td>₹ $fetch[price]</td>
                           <td>$fetch[description]</td>
                           <td>
-                          <a>Edit</a>
+                          <a href="?edit=$fetch[id]" class="btn btn-warning me-3"><i class="bi bi-pencil-square"></i></a>
                           <button onclick="confirm_rem($fetch[id])" class="btn btn-danger"><i class="bi bi-trash"></i> </button>
                           </td>
                          </tr>
@@ -81,9 +89,9 @@ require('connect.php');
     </div>
 
     <script>
-        function confirm_rem($id) {
+        function confirm_rem(id) {
             if (confirm("Are you sure, you want to delete ?")) {
-                window.location.href = "crum.php?rem" + id;
+                window.location.href = "crud.php?rem=" + id;
             }
         }
     </script>
@@ -121,9 +129,77 @@ require('connect.php');
         </div>
     </div>
 
+    <!--Edit modal -->
+    <div class="modal fade" id="editproduct" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form action="crud.php" method="POST" enctype="multipart/form-data">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Product</h5>
+                    </div>
+                    <div class="modal-body">
+                        <!-- INPUTS -->
+                        <div class="input-group mb-3">
+                            <!-- <span class="input-group-text">Name</span> -->
+                            <input type="text" class="form-control" name="editname" id="editname" placeholder="editname" required>
+                        </div>
+                        <div class="input-group mb-3">
+                            <input type="number" class="form-control" name="editprice" id="editprice" placeholder="Editprice" min="1" required>
+                        </div>
+                        <div class="input-group mb-3">
+                            <textarea placeholder="description" class="form-control" id="editdesc" name="editdesc" required></textarea>
+                        </div>
+                        <!-- for showing the image -->
+                        <img src="" id="editimage" class="mb-3" width="100%">
+                        <br>
+                        <div class="input-group mb-3">
+                            <input type="file" class="form-control" name="editimg" accept=".jpg,.jpeg,.png,.svg">
+                        </div>
+                        <input type="hidden" name="editpid" id="editpid">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="reset" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancle</button>
+                        <button type="submit" class="btn btn-dark" name="editproduct">Update</button>
+                    </div>
+                </div>
+            </form>
+
+            <?php
+            if (isset($_GET['edit']) && $_GET['edit'] > 0) {
+
+                $id = $_GET['edit'];
+                $query = "SELECT * FROM `products` WHERE `id` = $id";
+                $res = mysqli_query($conn, $query);
+                $fetch = mysqli_fetch_assoc($res);
+
+                // if ($res) {
+                //     print_r($fetch);
+                // } else {
+                //     echo "Query failed: " . mysqli_error($conn);
+                // }
+
+                echo "
+                    <script>
+                        var editproduct = new bootstrap.Modal(document.getElementById('editproduct'), {keyboard: false});
+                               document.querySelector('#editname').value=`$fetch[name]`;
+                               document.querySelector('#editprice').value=`$fetch[price]`;
+                               document.querySelector('#editdesc').value=`$fetch[description]`;
+                               document.querySelector('#editimage').src=`$fetch_src$fetch[image]`;
+                                document.querySelector('#editpid').value=`$_GET[edit]`;
+                    editproduct.show();
+                 </script>
+                ";
+            }
+            ?>
+
+        </div>
+    </div>
 
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+
+
+
 
 </body>
 
