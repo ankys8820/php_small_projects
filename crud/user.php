@@ -15,6 +15,7 @@ if (isset($_POST['submit'])) {
         echo "<script>
         alert('Record added successfully!');
       </script>";
+        header('location:index.php');
     } else {
         echo "<script>
         alert('Some error occured!');
