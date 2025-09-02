@@ -1,4 +1,5 @@
   <?php
+    include('database.php');
     // print_r($_POST);
     if (isset($_POST['submit'])) {
         $fullname = $_POST['fullname'];
@@ -6,7 +7,71 @@
         $password = $_POST['password'];
         $passwordRepeat = $_POST['repeat_password'];
 
-        $error = array();
+        $passwordHashed = sha1($_POST['password']);
+
+
+
+        $errors = array();
+
+        // check if the all feilds are filled or not 
+        if (empty($fullname) or empty($email) or empty($password) or empty($passwordRepeat)) {
+            array_push($errors, "All fields are required!");
+        }
+
+        // check is email is valid or not
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            array_push($errors, "Valid email is required");
+        }
+
+        // check password length
+        if (strlen($password) < 8) {
+            array_push($errors, "Minimum password must 8 char long !");
+        }
+
+        // check and password
+        if ($password !== $passwordRepeat) {
+            array_push($errors, "Password must be same !");
+        }
+
+        // check if the email already exists or not {without using unique constrains.}
+
+        $sql = "SELECT * FROM `users1` WHERE email = '$email'";
+
+        $result =  mysqli_query($conn, $sql);
+
+        // get the rows
+        $rowCount = mysqli_num_rows($result);
+
+        if ($rowCount) {
+            array_push(
+                $errors,
+                "Email already exist !"
+            );
+        }
+
+
+        if (count($errors) > 0) {
+            foreach ($errors as $error) {
+                echo "<div class='alert alert-danger'> $error </div>";
+            }
+        } else {
+            // We will insert our data into database
+            $sql = "INSERT INTO `users1` (`fullname`,`email`,`password`) VALUE (? , ? , ?)";
+
+            $stmt = mysqli_stmt_init($conn);
+
+            $prepareSTMT = mysqli_stmt_prepare($stmt, $sql);
+
+            if ($prepareSTMT) {
+                mysqli_stmt_bind_param($stmt, "sss", $fullname, $email, $passwordHashed);
+
+                mysqli_stmt_execute($stmt);
+
+                echo "<div class='alert alert-success'>You are registered successfully !</div>";
+            } else {
+                die("Something went wrong");
+            }
+        }
     }
 
     ?>
