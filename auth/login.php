@@ -1,3 +1,15 @@
+<?php
+session_start();
+
+// $_SESSION['name'] = 'Ankit';
+
+// print_r($_SESSION);
+
+if (isset($_SESSION["user"])) {
+    header("location: http://localhost/PHP_Small_Projects/auth");
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,7 +24,39 @@
 
 <body>
     <div class="container">
-        <form action="register.php" method="post">
+        <?php
+        include('database.php');
+
+        if (isset($_POST['login'])) {
+
+            $email = $_POST['email'];
+            $password = $_POST['password'];
+            $passwordHashed = sha1($_POST['password']);
+
+            // 
+            $sql = "SELECT * FROM `users1` WHERE `email` = '$email'";
+
+            $result = mysqli_query($conn, $sql);
+
+            $user = mysqli_fetch_array($result, MYSQLI_ASSOC);
+
+            if ($user) {
+                if ($user['password'] == $passwordHashed) {
+
+
+                    $_SESSION['user'] = $user['fullname'];
+                    header('localtion: http://localhost/PHP_Small_Projects/auth');
+
+                    die();
+                } else {
+                    echo "<div class='alert alert-danger'>Opps password didn't matched!</div>";
+                }
+            } else {
+                echo "<div class='alert alert-danger'>Email does not existst!</div>";
+            }
+        }
+        ?>
+        <form action="login.php" method="post">
             <h3 class="mb-3">Sign In</h3>
             <div class="form-group">
                 <input type="email" class="form-control" name="email" placeholder="Enter email">
@@ -22,7 +66,7 @@
             </div>
 
             <div class="form-btn">
-                <input type="submit" class="btn btn-dark" value="Login" name="submit">
+                <input type="submit" class="btn btn-dark" value="Login" name="login">
             </div>
         </form>
         <p class="mt-3">If you haven't created account <a href="register.php">Click here</a></p>

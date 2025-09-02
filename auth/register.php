@@ -1,7 +1,19 @@
   <?php
+
+
+    session_start();
+
+    // $_SESSION['name'] = 'Ankit';
+
+    // print_r($_SESSION);
+
+    if (isset($_SESSION["user"])) {
+        header("location: http://localhost/PHP_Small_Projects/auth");
+    }
+
     include('database.php');
     // print_r($_POST);
-    if (isset($_POST['submit'])) {
+    if (isset($_POST['register'])) {
         $fullname = $_POST['fullname'];
         $email = $_POST['email'];
         $password = $_POST['password'];
@@ -108,7 +120,7 @@
                       class="form-control" placeholder="Repeat Password">
               </div>
               <div class="form-btn">
-                  <input type="submit" class="btn btn-dark" value="Register" name="submit">
+                  <input type="submit" class="btn btn-dark" value="Register" name="register">
               </div>
           </form>
           <p class="mt-3">Already created an account ?<a href="login.php">Click here</a></p>
