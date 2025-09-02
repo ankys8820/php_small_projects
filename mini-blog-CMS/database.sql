@@ -1,0 +1,7 @@
+CREATE DATABASE mini_blog;
+
+SHOW DATABASES;
+
+USE mini_blog;
+
+SHOW TABLES;
