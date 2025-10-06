@@ -2,8 +2,8 @@
 include_once './db.php';
 
 // for subscribe
-if($_SERVER['REQUEST_METHOD'] == "POST" && $_POST['crud_req']=='subscribe')
-    subscribe($conn);
+if($_SERVER['REQUEST_METHOD'] == "POST" && $_POST['crud_req']=='signup')
+    signup($conn);
 
 // for logout
 if($_SERVER['REQUEST_METHOD'] == "GET")
@@ -25,8 +25,8 @@ if($_SERVER['REQUEST_METHOD'] == "POST" && $_POST['crud_req']=='login')
 
 
 
-function subscribe($conn){
-    
+function signup($conn){
+    echo "welcome to signup";
 }
 function login($conn){}
 function logout($conn){}
